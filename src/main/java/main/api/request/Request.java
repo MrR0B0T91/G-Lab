@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Request {
 
-    private Double a;
-    private Double b;
-    private Double c;
+    private Double firstArgument;
+    private Double secondArgument;
+    private Double thirdArgument;
 }

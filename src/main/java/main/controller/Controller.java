@@ -1,7 +1,7 @@
 package main.controller;
 
 import main.api.request.Request;
-import main.api.response.CalculateResponse;
+import main.api.response.interfaces.Response;
 import main.service.CalculateService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +19,9 @@ public class Controller {
     }
 
     @GetMapping
-    public CalculateResponse getResult(
+    public Response getResult(
             @RequestBody Request request) {
-        return calculateService.getResult(request.getA(), request.getB(), request.getC());
+        return calculateService.getResult(request.getFirstArgument(), request.getSecondArgument(), request.getThirdArgument());
     }
 
 }
