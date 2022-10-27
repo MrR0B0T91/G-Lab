@@ -26,7 +26,6 @@ public class CalculateService {
         OneAnswerResponse oneAnswerResponse = new OneAnswerResponse();
         TwoAnswersResponse twoAnswersResponse = new TwoAnswersResponse();
         ErrorResponse errorResponse = new ErrorResponse();
-        Answer answer = new Answer();
 
         if ((firstArgument == null) || (secondArgument == null) || (thirdArgument == null)) {
 
@@ -44,8 +43,7 @@ public class CalculateService {
             Double result = (-1 * secondArgument) / (2 * firstArgument);
             oneAnswerResponse.setX1(result);
 
-            answer.setX1(result);
-            answerRepository.save(answer);
+            saveAnswers(result, null);
             saveArguments(firstArgument, secondArgument, thirdArgument);
 
             return oneAnswerResponse;
@@ -57,10 +55,7 @@ public class CalculateService {
             twoAnswersResponse.setX1(x1);
             twoAnswersResponse.setX2(x2);
 
-            answer.setX1(x1);
-            answer.setX2(x2);
-
-            answerRepository.save(answer);
+            saveAnswers(x1, x2);
             saveArguments(firstArgument, secondArgument, thirdArgument);
         }
 
@@ -76,5 +71,25 @@ public class CalculateService {
         data.setThirdArgument(thirdArgument);
 
         dataRepository.save(data);
+    }
+
+    public void saveAnswers(Double x1, Double x2) {
+
+        if (x2 == null) {
+
+            Answer answer = new Answer();
+
+            answer.setX1(x1);
+            answerRepository.save(answer);
+
+        } else {
+
+            Answer answer = new Answer();
+
+            answer.setX1(x1);
+            answer.setX2(x2);
+
+            answerRepository.save(answer);
+        }
     }
 }
