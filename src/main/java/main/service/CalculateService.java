@@ -4,7 +4,9 @@ import main.api.response.ErrorResponse;
 import main.api.response.OneAnswerResponse;
 import main.api.response.TwoAnswersResponse;
 import main.api.response.interfaces.Response;
+import main.model.Answer;
 import main.model.Data;
+import main.model.repository.AnswerRepository;
 import main.model.repository.DataRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Service;
 public class CalculateService {
 
     private final DataRepository dataRepository;
+    private final AnswerRepository answerRepository;
 
-    public CalculateService(DataRepository dataRepository) {
+    public CalculateService(DataRepository dataRepository, AnswerRepository answerRepository) {
         this.dataRepository = dataRepository;
+        this.answerRepository = answerRepository;
     }
 
     public Response getResult(Double firstArgument, Double secondArgument, Double thirdArgument) {
@@ -22,7 +26,7 @@ public class CalculateService {
         OneAnswerResponse oneAnswerResponse = new OneAnswerResponse();
         TwoAnswersResponse twoAnswersResponse = new TwoAnswersResponse();
         ErrorResponse errorResponse = new ErrorResponse();
-        Data data = new Data();
+        Answer answer = new Answer();
 
         if ((firstArgument == null) || (secondArgument == null) || (thirdArgument == null)) {
 
@@ -39,6 +43,11 @@ public class CalculateService {
         if (dis == 0) {
             Double result = (-1 * secondArgument) / (2 * firstArgument);
             oneAnswerResponse.setX1(result);
+
+            answer.setX1(result);
+            answerRepository.save(answer);
+            saveArguments(firstArgument, secondArgument, thirdArgument);
+
             return oneAnswerResponse;
         }
         if (dis > 0) {
@@ -48,16 +57,24 @@ public class CalculateService {
             twoAnswersResponse.setX1(x1);
             twoAnswersResponse.setX2(x2);
 
-            data.setX1(x1);
-            data.setX2(x2);
+            answer.setX1(x1);
+            answer.setX2(x2);
+
+            answerRepository.save(answer);
+            saveArguments(firstArgument, secondArgument, thirdArgument);
         }
+
+        return twoAnswersResponse;
+    }
+
+    public void saveArguments(Double firstArgument, Double secondArgument, Double thirdArgument) {
+
+        Data data = new Data();
 
         data.setFirstArgument(firstArgument);
         data.setSecondArgument(secondArgument);
         data.setThirdArgument(thirdArgument);
 
         dataRepository.save(data);
-
-        return twoAnswersResponse;
     }
 }
